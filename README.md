@@ -1,79 +1,116 @@
-🚀 POF: Planty of Food - GAS API
-Benvenuti nel backend di Planty of Food (POF). Questo progetto consiste in un set di API JSON RESTful sviluppate in Node.js per la gestione dei Gruppi di Acquisto Solidale (GAS). L'obiettivo è facilitare l'acquisto di prodotti alimentari plant-based, biologici e sostenibili, riducendo l'impatto ambientale tramite ordini collettivi.
+# Planty of Food API (POF)
 
-🛠️ Tech Stack
-Runtime: Node.js
+Backend API RESTful per la gestione dei Gruppi di Acquisto Solidale (GAS) con Node.js, Express e MySQL.
 
-Framework: Express.js
+## Requisiti
+- Node.js >= 18
+- MySQL 8.x
 
-Database: MySQL
+## Setup
+1. Clona il progetto o copia i file nella cartella desiderata.
+2. Installa le dipendenze:
+   ```bash
+   npm install
+   ```
+3. Crea un database MySQL (es. `pof`) e importa lo schema:
+   - Apri il tuo client MySQL (phpMyAdmin, MySQL Workbench, ecc.)
+   - Esegui il file `migrations.sql`
+4. Configura l'ambiente:
+   - Copia `.env.example` in `.env` e imposta i dati di connessione al DB
+5. Avvia il server:
+   ```bash
+   npm start
+   ```
+   L'API sarà in ascolto su `http://localhost:3000` (o sulla porta definita in `PORT`).
 
-Sicurezza: Prepared Statements (SQL Injection Prevention)
+## Struttura Cartelle
+```
+src/
+  config/        # connessione MySQL (mysql2/promise)
+  controllers/   # logica di business per ogni risorsa
+  middleware/    # sanitizzazione input e gestione errori
+  models/        # accesso ai dati con Prepared Statements
+  routes/        # definizione delle rotte REST
+  app.js         # configurazione Express
+  server.js      # bootstrap server
+```
 
-Architettura: RESTful
+## Sicurezza
+- Tutte le query al DB utilizzano Prepared Statements (placeholders `?`) con `mysql2`.
+- Middleware di sanitizzazione per body, query e params.
+- CORS abilitato.
 
-📋 Requisiti del Progetto
-Il sistema permette di gestire le tre entità principali del modello GAS:
+## Endpoints
+Prefisso: `/api`
 
-Prodotti: Gestione del catalogo (Nome prodotto).
+### Utenti
+- POST `/api/users`
+  - Body:
+    ```json
+    { "nome": "Mario", "cognome": "Rossi", "email": "mario.rossi@example.com" }
+    ```
+  - 201 Created -> oggetto utente
+- GET `/api/users` -> lista utenti
+- GET `/api/users/:id` -> dettaglio utente
+- PUT `/api/users/:id`
+  - Body:
+    ```json
+    { "nome": "Mario", "cognome": "Verdi", "email": "mario.verdi@example.com" }
+    ```
+  - 200 OK -> utente aggiornato
+- DELETE `/api/users/:id` -> 204 No Content
 
-Utenti: Anagrafica clienti (Nome, Cognome, Email).
+### Prodotti
+- POST `/api/products`
+  - Body:
+    ```json
+    { "nome": "Tofu Bio" }
+    ```
+  - 201 Created -> oggetto prodotto
+- GET `/api/products` -> lista prodotti
+- GET `/api/products/:id` -> dettaglio prodotto
+- PUT `/api/products/:id`
+  - Body:
+    ```json
+    { "nome": "Tempeh Bio" }
+    ```
+  - 200 OK -> prodotto aggiornato
+- DELETE `/api/products/:id` -> 204 No Content
 
-Ordini: Creazione e gestione di ordini collettivi che associano più prodotti a più utenti.
+### Ordini
+- POST `/api/orders`
+  - Body:
+    ```json
+    {
+      "items": [
+        { "productId": 1, "quantity": 2 },
+        { "productId": 2, "quantity": 1 }
+      ],
+      "participants": [
+        { "userId": 1 },
+        { "userId": 2 }
+      ]
+    }
+    ```
+  - 201 Created -> ordine con items e partecipanti
+- GET `/api/orders`
+  - Query facoltative:
+    - `from=YYYY-MM-DD`
+    - `to=YYYY-MM-DD`
+    - `productId=<id>`
+  - 200 OK -> lista ordini (ognuno con items e partecipanti)
+- GET `/api/orders/:id` -> dettaglio ordine
+- PUT `/api/orders/:id`
+  - Body (sostituisce items e partecipanti):
+    ```json
+    {
+      "items": [{ "productId": 1, "quantity": 3 }],
+      "participants": [{ "userId": 1 }]
+    }
+    ```
+  - 200 OK -> ordine aggiornato
+- DELETE `/api/orders/:id` -> 204 No Content
 
-⚙️ Installazione e Configurazione
-Segui questi passaggi per avviare il progetto in locale:
+## Note
+- Non sono richiesti ulteriori passaggi manuali oltre alla creazione del DB, import dello schema e configurazione del file `.env`.
 
-1. Clona la repository
-Bash
-git clone https://github.com/tuo-username/pof-gas-api.git
-cd pof-gas-api
-2. Installa le dipendenze
-Bash
-npm install
-3. Configura il Database
-Crea un database MySQL chiamato pof_db.
-
-Importa il file migrations.sql per creare le tabelle e le relazioni.
-
-Rinomina il file .env.example in .env e inserisci le tue credenziali:
-
-Snippet di codice
-DB_HOST=localhost
-DB_USER=root
-DB_PASS=tua_password
-DB_NAME=pof_db
-PORT=3000
-4. Avvia il server
-Bash
-npm start
-🔌 Documentazione API (Endpoint)
-Utenti
-GET /api/users - Lista tutti gli utenti.
-
-POST /api/users - Crea un nuovo utente.
-
-PUT /api/users/:id - Modifica un utente.
-
-DELETE /api/users/:id - Elimina un utente.
-
-Prodotti
-GET /api/products - Lista tutti i prodotti.
-
-POST /api/products - Aggiunge un prodotto.
-
-PUT /api/products/:id - Modifica un prodotto.
-
-DELETE /api/products/:id - Elimina un prodotto.
-
-Ordini (GAS)
-GET /api/orders - Lista tutti gli ordini.
-
-POST /api/orders - Crea un nuovo ordine collettivo.
-
-GET /api/orders?date=YYYY-MM-DD - Filtra ordini per data.
-
-GET /api/orders?product=id_prodotto - Filtra ordini per prodotto contenuto.
-
-🛡️ Sicurezza
-Per garantire l'integrità dei dati e la protezione contro attacchi esterni, tutte le query al database sono state implementate utilizzando Prepared Statements tramite la libreria mysql2, neutralizzando il rischio di SQL Injection.
