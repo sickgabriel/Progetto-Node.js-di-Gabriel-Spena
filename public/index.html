@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Planty of Food API - Demo</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header>
+    <h1>Planty of Food API</h1>
+    <p>Demo visiva per testare rapidamente le funzionalità</p>
+  </header>
+  <main>
+    <section class="status">
+      <div class="card">
+        <h2>Stato Server</h2>
+        <button id="btnHealth">Verifica /api/system/health</button>
+        <pre id="outHealth">Premi il pulsante…</pre>
+      </div>
+      <div class="card">
+        <h2>Stato Database</h2>
+        <button id="btnDb">Verifica /api/system/health/db</button>
+        <pre id="outDb">Premi il pulsante…</pre>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <h2>Crea Utente</h2>
+        <form id="formUser">
+          <label>Nome <input name="nome" required></label>
+          <label>Cognome <input name="cognome" required></label>
+          <label>Email <input name="email" type="email" required></label>
+          <button type="submit">Crea</button>
+        </form>
+        <pre id="outUser"></pre>
+      </div>
+
+      <div class="card">
+        <h2>Crea Prodotto</h2>
+        <form id="formProduct">
+          <label>Nome <input name="nome" required></label>
+          <button type="submit">Crea</button>
+        </form>
+        <pre id="outProduct"></pre>
+      </div>
+
+      <div class="card">
+        <h2>Lista Utenti</h2>
+        <button id="btnUsers">GET /api/users</button>
+        <pre id="outUsers"></pre>
+      </div>
+
+      <div class="card">
+        <h2>Lista Prodotti</h2>
+        <button id="btnProducts">GET /api/products</button>
+        <pre id="outProducts"></pre>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Crea Ordine (semplice)</h2>
+      <p>Inserisci ID reali di user e product già creati. Quantità opzionale.</p>
+      <form id="formOrder">
+        <div class="row">
+          <label>ProductId <input name="productId" type="number" min="1" required></label>
+          <label>Quantity <input name="quantity" type="number" min="1" value="1" required></label>
+        </div>
+        <div class="row">
+          <label>UserId <input name="userId" type="number" min="1" required></label>
+        </div>
+        <button type="submit">Crea Ordine</button>
+      </form>
+      <pre id="outOrder"></pre>
+    </section>
+  </main>
+  <footer>
+    <p>API: <a href="/api" target="_blank">/api</a> · Codice: struttura MVC, mysql2, Express</p>
+  </footer>
+  <script src="/app.js"></script>
+  </body>
+</html>
